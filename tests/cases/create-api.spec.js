@@ -1,7 +1,7 @@
 var HomePage = require('../util/HomePage');
 var Sidebar = require('../util/Sidebar');
 var ListAPIsPage = require('../util/ListAPIsPage');
-var CreateAPIPage = require('../util/CreateAPIPage');
+var CreatePage = require('../util/CreatePage');
 var KongDashboard = require('../util/KongDashboard');
 var Kong = require('../util/KongClient');
 var request = require('../../lib/request');
@@ -51,7 +51,7 @@ describe('API creation testing', () => {
       Object.keys(data.inputs).forEach((inputName) => {
         PropertyInput.set(inputName, data.inputs[inputName]);
       });
-      CreateAPIPage.submit().then(() => {
+      CreatePage.submit().then(() => {
         expect(element(by.cssContainingText('div.toast', 'Api created')).isPresent()).toBeTruthy();
         return browser.waitForAngular(); // waiting for ajax call to create API to be finished.
       }).then(() => {
@@ -70,7 +70,7 @@ describe('API creation testing', () => {
       Object.keys(data.inputs).forEach((inputName) => {
         PropertyInput.set(inputName, data.inputs[inputName]);
       });
-      CreateAPIPage.submit().then(() => {
+      CreatePage.submit().then(() => {
         expect(element(by.cssContainingText('div.toast', 'Api created')).isPresent()).toBeFalsy();
         if (data.expectedErrors.globalError) {
           expect(element(by.cssContainingText('div.toast', data.expectedErrors.globalError)).isPresent()).toBeTruthy();
