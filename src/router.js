@@ -7,6 +7,37 @@
         templateUrl: 'html/home.html',
         controller: 'HomeController'
       })
+      .when('/services', {
+        templateUrl: 'html/services/index.html',
+        controller: 'ServicesController'
+      })
+      .when('/services/add', {
+        templateUrl: 'html/services/form.html',
+        controller: 'ServiceController',
+        resolve: {
+          service: function() {return {}}
+        }
+      })
+      .when('/services/:id', {
+        templateUrl: 'html/services/form.html',
+        controller: 'ServiceController',
+        resolve: {
+          service: ['Kong', '$route', function (Kong, $route) {
+            var id = $route.current.params.id;
+            return Kong.get('/services/' + id)
+              .then(function (service) {
+                service.url = service.protocol + '://' + service.host;
+                if (service.port) {
+                    service.url += ':' + service.port;
+                }
+                if (service.path) {
+                    service.url += service.path;
+                }
+                return service;
+              })
+          }]
+        }
+      })
       .when('/apis', {
         templateUrl: 'html/apis/index.html',
         controller: 'ApisController'
