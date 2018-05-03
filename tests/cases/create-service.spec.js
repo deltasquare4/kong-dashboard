@@ -14,6 +14,11 @@ describe('Service creation testing', () => {
 
   var serviceSchema;
 
+  if (process.env.KONG_VERSION === '0.13') {
+    // no Service before Kong 0.13.
+    return
+  }
+
   beforeEach((done) => {
     Kong.deleteAllServices().then(done);
   });
