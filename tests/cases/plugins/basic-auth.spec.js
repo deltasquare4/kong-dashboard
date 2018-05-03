@@ -67,6 +67,18 @@ describe('Basic Auth plugin testing:', () => {
         'config': {'hide_credentials': true, 'anonymous': anonymousConsumer.id},
         'enabled': true
       };
+    } else if (process.env.KONG_VERSION === '0.13') {
+      inputs = {
+        'name': 'basic-auth',
+        'api_id': 'All',
+        'config-hide_credentials': true,
+        'config-anonymous': ''
+      };
+      expectedPluginParams = {
+        'name': 'basic-auth',
+        'config': {'hide_credentials': true, 'anonymous': ''},
+        'enabled': true
+      };
     } else {
       throw new Error('Kong version not supported in unit tests.')
     }
@@ -110,6 +122,19 @@ describe('Basic Auth plugin testing:', () => {
         'api_id': api.id,
         'name': 'basic-auth',
         'config': {'hide_credentials': true, 'anonymous': anonymousConsumer.id},
+        'enabled': true
+      };
+    } else if (process.env.KONG_VERSION === '0.13') {
+      inputs = {
+        'name': 'basic-auth',
+        'api_id': api.name,
+        'config-hide_credentials': true,
+        'config-anonymous': ''
+      };
+      expectedPluginParams = {
+        'api_id': api.id,
+        'name': 'basic-auth',
+        'config': {'hide_credentials': true, 'anonymous': ''},
         'enabled': true
       };
     } else {

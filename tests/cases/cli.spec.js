@@ -193,7 +193,7 @@ function createBasicAuthProtectedKongAPI() {
     });
   }
 
-  else if (['0.10', '0.11', '0.12', '0.13' ].includes(process.env.KONG_VERSION)) {
+  else if (['0.10', '0.11', '0.12', '0.13'].includes(process.env.KONG_VERSION)) {
     apiPromise = Kong.createAPI({
       name: 'KongWithBasicAuth',
       upstream_url: 'http://localhost:8001',
