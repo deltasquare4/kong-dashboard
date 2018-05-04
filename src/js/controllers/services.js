@@ -40,15 +40,15 @@ angular.module('app').controller("ServicesController", ["$scope", "Kong", functi
 
     $scope.showDeleteModal = function (name, id) {
         $scope.current = {name: name, id: id};
-        $('#deleteAPI').modal('open');
+        $('#deleteService').modal('open');
     };
 
     $scope.abortDelete = function () {
-        $('#deleteAPI').modal('close');
+        $('#deleteService').modal('close');
     };
 
     $scope.performDelete = function () {
-        $('#deleteAPI').modal('close');
+        $('#deleteService').modal('close');
         Kong.delete('/services/' + $scope.current.id).then(function () {
             $scope.total -= 1;
             $scope.services.forEach(function(element, index) {
