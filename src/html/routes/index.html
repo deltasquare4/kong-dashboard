@@ -1,0 +1,117 @@
+<div class="container" infinite-scroll="loadMore()" infinite-scroll-distance="5" infinite-scroll-use-document-bottom="true">
+    <a href="#!/routes/add" id="newRoute" class="btn-floating btn-large waves-effect waves-light right">
+        <i class="material-icons">add</i>
+    </a>
+
+    <h3 class="header">Routes</h3>
+
+    <p class="flow-text center" ng-show="total === null" style="margin-top:50px;">
+        <app-loader></app-loader>
+    </p>
+
+    <div class ng-show="total === 0">
+        <p class="flow-text center">
+            You haven't created any Route in Kong yet.
+        </p>
+        <p class="center">
+            <a href="#!/routes/add" class="waves-effect waves-light btn">
+                <i class="material-icons left">add_box</i>
+                Add Route
+            </a>
+        </p>
+    </div>
+
+    <table class="bordered" ng-show="total > 0">
+        <thead>
+        <tr>
+            <th ng-if="env.schemas.route.properties.protocols">Protocol(s)</th>
+            <th ng-if="env.schemas.route.properties.methods">Method(s)</th>
+            <th ng-if="env.schemas.route.properties.hosts">Host(s)</th>
+            <th ng-if="env.schemas.route.properties.paths">Path(s)</th>
+            <th>Service</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="route in routes">
+            <td ng-if="env.schemas.route.properties.protocols">
+                <ul ng-if="route.protocols.length != 1"
+                    class="browser-default">
+                    <li ng-repeat="protocol in route.protocols">
+                        {{ protocol }}
+                    </li>
+                </ul>
+                <span ng-if="route.protocols.length == 1">
+                    {{ route.protocols[0] }}
+                </span>
+            </td>
+
+            <td ng-if="env.schemas.route.properties.methods">
+                <ul ng-if="route.methods.length != 1"
+                    class="browser-default">
+                    <li ng-repeat="method in route.methods">
+                        {{ method }}
+                    </li>
+                </ul>
+                <span ng-if="route.methods.length == 1">
+                    {{ route.methods[0] }}
+                </span>
+            </td>
+
+            <td ng-if="env.schemas.route.properties.hosts">
+                <ul ng-if="route.hosts.length != 1"
+                    class="browser-default">
+                    <li ng-repeat="host in route.hosts">
+                        <a href="{{ route.protocols.contains('https') ? 'https' : 'http' }}://{{ host }}" target="_blank">{{ host }}</a>
+                    </li>
+                </ul>
+                <a ng-if="route.hosts.length == 1"
+                   href="{{ route.protocols.contains('https') ? 'https' : 'http' }}://{{ route.hosts[0] }}"
+                   target="_blank">
+                    {{ route.hosts[0] }}
+                </a>
+            </td>
+
+            <td ng-if="env.schemas.route.properties.paths">
+                <ul ng-if="route.paths.length != 1"
+                    class="browser-default">
+                    <li ng-repeat="path in route.paths">
+                        {{ path }}
+                    </li>
+                </ul>
+                <span ng-if="route.paths.length == 1">
+                    {{ route.paths[0] }}
+                </span>
+            </td>
+
+            <td>
+                <a href="{{ route.service }}" target="_blank">{{ route.service }}</a>
+            </td>
+
+            <td>{{route.created_at | date}}</td>
+
+            <td class="right">
+                <a class="btn-floating waves-effect waves-light" href="#!/routes/{{route.id}}">
+                    <i class="material-icons">mode_edit</i>
+                </a>
+                <a class="btn-floating waves-effect waves-light red modal-trigger" ng-click="showDeleteModal(route.id, route.id)">
+                    <i class="material-icons">delete</i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Structure -->
+<div id="deleteRoute" class="modal">
+    <div class="modal-content">
+        <h5>Do you really want to delete the API "{{current.id}}"?</h5>
+    </div>
+    <div class="modal-footer">
+        <a class="waves-effect waves-green btn" ng-click="abortDelete()">Noooooo!</a>
+        <a class="waves-effect waves-red btn red" ng-click="performDelete()" style="margin-right:10px">Yes</a>
+    </div>
+</div>

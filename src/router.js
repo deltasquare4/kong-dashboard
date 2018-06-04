@@ -38,6 +38,27 @@
           }]
         }
       })
+      .when('/routes', {
+        templateUrl: 'html/routes/index.html',
+        controller: 'RoutesController'
+      })
+      .when('/routes/add', {
+        templateUrl: 'html/routes/form.html',
+        controller: 'RouteController',
+        resolve: {
+          route: function() {return {}}
+        }
+      })
+      .when('/routes/:id', {
+        templateUrl: 'html/routes/form.html',
+        controller: 'RouteController',
+        resolve: {
+          route: ['Kong', '$route', function (Kong, $route) {
+            var id = $route.current.params.id;
+            return Kong.get('/routes/' + id)
+          }]
+        }
+      })
       .when('/apis', {
         templateUrl: 'html/apis/index.html',
         controller: 'ApisController'
