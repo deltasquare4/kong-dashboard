@@ -42,7 +42,7 @@
 
             <td>{{service.id}}</td>
 
-            <td>{{service.created_at | date}}</td>
+            <td>{{service.created_at * 1000 | date:"MMM dd, yyyy"}}</td>
 
             <td class="right">
                 <a class="btn-floating waves-effect waves-light" href="#!/services/{{service.id}}">
