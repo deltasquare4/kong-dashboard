@@ -87,10 +87,10 @@
             </td>
 
             <td>
-                <a href="{{ route.service }}" target="_blank">{{ route.service }}</a>
+                <a href="#!/services/{{ route.service.id }}">{{ route.service.id }}</a>
             </td>
 
-            <td>{{route.created_at | date}}</td>
+            <td>{{route.created_at * 1000 | date:"MMM dd, yyyy"}}</td>
 
             <td class="right">
                 <a class="btn-floating waves-effect waves-light" href="#!/routes/{{route.id}}">
