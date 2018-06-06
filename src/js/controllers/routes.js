@@ -33,14 +33,14 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
                 $scope.total = 0;
             }
 
-            collection.data.forEach(function(routes, index){
-                serviceData.forEach(function(service){
+            angular.forEach(collection.data, function(routes, index){
+                angular.forEach(serviceData, function(service){
                     if (routes.service.id === service.serviceId) {
                         collection.data[index]['serviceId'] = service.serviceId;
                         collection.data[index]['serviceName'] = service.serviceName;
                     }
-                });
-            });
+                })
+            })
 
             $scope.routes.push.apply($scope.routes, collection.data);
             $scope.total += collection.data.length;
