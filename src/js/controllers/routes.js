@@ -3,8 +3,22 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
     $scope.total = null;
     $scope.offset = null;
 
+    var serviceData;
     var loaded_pages = [];
     $scope.loadMore = function() {
+        // services
+        var page = '/services?';
+        Kong.get(page).then(function(collection) {
+            if ($scope.total === null) {
+                $scope.total = 0;
+            }
+
+            serviceData = collection.data.map(function(services){
+                return {serviceId: services.id, serviceName: services.name};
+            });
+        });
+
+        // routes
         var page = '/routes?';
         if ($scope.offset) {
             page += 'offset=' + $scope.offset + '&';
@@ -18,6 +32,16 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
             if ($scope.total === null) {
                 $scope.total = 0;
             }
+
+            collection.data.forEach(function(routes, index){
+                serviceData.forEach(function(service){
+                    if (routes.service.id === service.serviceId) {
+                        collection.data[index]['serviceId'] = service.serviceId;
+                        collection.data[index]['serviceName'] = service.serviceName;
+                    }
+                });
+            });
+
             $scope.routes.push.apply($scope.routes, collection.data);
             $scope.total += collection.data.length;
             $scope.offset = collection.offset ? collection.offset : null;
