@@ -16,6 +16,8 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
             serviceData = collection.data.map(function(services){
                 return {serviceId: services.id, serviceName: services.name};
             });
+        }).catch(function(error){
+            console.log('service error', error);
         });
 
         // routes
@@ -40,11 +42,15 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
                         collection.data[index]['serviceName'] = service.serviceName;
                     }
                 })
-            })
+            });
+
+            console.log('data', collection.data);
 
             $scope.routes.push.apply($scope.routes, collection.data);
             $scope.total += collection.data.length;
             $scope.offset = collection.offset ? collection.offset : null;
+        }).catch(function(error){
+            console.log('route error', error);
         });
     };
     $scope.loadMore();
