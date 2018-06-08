@@ -3,24 +3,8 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
     $scope.total = null;
     $scope.offset = null;
 
-    var serviceData;
     var loaded_pages = [];
     $scope.loadMore = function() {
-        // services
-        var page = '/services?';
-        Kong.get(page).then(function(collection) {
-            if ($scope.total === null) {
-                $scope.total = 0;
-            }
-
-            serviceData = collection.data.map(function(services){
-                return {serviceId: services.id, serviceName: services.name};
-            });
-        }).catch(function(error){
-            console.log('service error', error);
-        });
-
-        // routes
         var page = '/routes?';
         if ($scope.offset) {
             page += 'offset=' + $scope.offset + '&';
@@ -35,22 +19,23 @@ angular.module('app').controller("RoutesController", ["$scope", "Kong", function
                 $scope.total = 0;
             }
 
-            angular.forEach(collection.data, function(routes, index){
-                angular.forEach(serviceData, function(service){
-                    if (routes.service.id === service.serviceId) {
-                        collection.data[index]['serviceId'] = service.serviceId;
-                        collection.data[index]['serviceName'] = service.serviceName;
-                    }
-                })
-            });
+            Kong.get('/services?').then(function(serviceCollection) {
+                var serviceData = serviceCollection.data.map(function(services){
+                    return {serviceId: services.id, serviceName: services.name};
+                });
 
-            console.log('data', collection.data);
+                angular.forEach(collection.data, function(routes, index){
+                    angular.forEach(serviceData, function(service){
+                        if (routes.service.id === service.serviceId) {
+                            collection.data[index]['serviceName'] = service.serviceName;
+                        }
+                    })
+                });
+            });
 
             $scope.routes.push.apply($scope.routes, collection.data);
             $scope.total += collection.data.length;
             $scope.offset = collection.offset ? collection.offset : null;
-        }).catch(function(error){
-            console.log('route error', error);
         });
     };
     $scope.loadMore();
