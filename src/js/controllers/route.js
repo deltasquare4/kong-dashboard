@@ -2,11 +2,15 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
 {
     $scope.schema = env.schemas.route;
     $scope.errors = {};
-
+    $scope.services = {};
 
     onInit();
 
     function onInit() {
+        Kong.get('/services').then(function(collection) {
+            $scope.services = collection.data;
+        });
+
         if ($routeParams.id) {
             $scope.route = route;
             $scope.title = "Edit Route";
@@ -24,7 +28,8 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
 
     $scope.save = function () {
         if ( $scope.isEdit() ) {
-            Kong.patch('/services/' + $scope.route.id, $scope.route).then(function () {
+
+            Kong.patch('/routes/' + $scope.route.id, $scope.route).then(function () {
                 Alert.success('Route updated');
                 // clearing errors.
                 $scope.errors = {};
@@ -37,7 +42,17 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
                 }
             });
         } else {
-            Kong.post('/services', $scope.route).then(function () {
+
+            //convert to array
+            var hosts = $scope.route.hosts.split(',');
+            var paths = $scope.route.paths.split(',');
+
+            //add to route object
+            $scope.route.hosts = hosts;
+            $scope.route.paths = paths;
+            $scope.route.service = {id: $scope.service.id};
+
+            Kong.post('/routes', $scope.route).then(function () {
                 Alert.success('Route created');
                 // clearing inputs.
                 $scope.route = {};
