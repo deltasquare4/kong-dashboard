@@ -28,7 +28,7 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
 
     $scope.save = function () {
         if ( $scope.isEdit() ) {
-
+            $scope.route = routeData();
             Kong.patch('/routes/' + $scope.route.id, $scope.route).then(function () {
                 Alert.success('Route updated');
                 // clearing errors.
@@ -42,16 +42,7 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
                 }
             });
         } else {
-
-            //convert to array
-            var hosts = $scope.route.hosts.split(',');
-            var paths = $scope.route.paths.split(',');
-
-            //add to route object
-            $scope.route.hosts = hosts;
-            $scope.route.paths = paths;
-            $scope.route.service = {id: $scope.service.id};
-
+            $scope.route = routeData();
             Kong.post('/routes', $scope.route).then(function () {
                 Alert.success('Route created');
                 // clearing inputs.
@@ -66,6 +57,30 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
                     console.log(response);
                 }
             });
+        }
+
+        function routeData() {
+            //convert to array
+            var hosts;
+            var paths;
+
+            if (typeof($scope.route.hosts) === 'string' && typeof($scope.route.paths) === 'string') {
+                hosts = $scope.route.hosts.split(',');
+                paths = $scope.route.paths.split(',');
+            } else if (typeof($scope.route.paths) === 'string') {
+                paths = $scope.route.paths.split(',');
+                hosts = $scope.route.hosts;
+            } else if (typeof($scope.route.hosts) === 'string'){
+                hosts = $scope.route.hosts.split(',');
+                paths = $scope.route.paths;
+            }
+
+            //add to route object
+            $scope.route.hosts = hosts;
+            $scope.route.paths = paths;
+            $scope.route.service = {id: $scope.service.id};
+
+            return $scope.route;
         }
     };
 }]);
