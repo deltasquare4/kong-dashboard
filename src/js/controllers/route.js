@@ -15,6 +15,7 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
             $scope.route = route;
             $scope.title = "Edit Route";
             $scope.action = "Save";
+            $scope.service = route.service.id;
         } else {
             $scope.route = {};
             $scope.title = "Add an Route";
@@ -78,7 +79,7 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
             //add to route object
             $scope.route.hosts = hosts;
             $scope.route.paths = paths;
-            $scope.route.service = {id: $scope.service.id};
+            $scope.route.service = {id: $scope.service};
 
             return $scope.route;
         }
