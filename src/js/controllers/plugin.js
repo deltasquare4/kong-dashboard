@@ -2,17 +2,10 @@ angular.module('app').controller("PluginController", ["$scope", "Kong", "$locati
 {
     var mode;
 
-    var serviceData = {};
-    Kong.get('/routes').then(function(route) {
-        routeData = route.data;
-        console.log('routedata', routeData);
-        for (var i=0; i <= routeData.length - 1; i++) {
-            routeData[i].url = routeData[i].protocols[0]+'://'+routeData[i].hosts[0]+routeData[i].paths[0];
-        }
-        $scope.routes = routeData;
-        Kong.get('/services').then(function(service) {
-            $scope.services = service.data;
-            console.log('serviceData', service.data);
+    Kong.get('/services').then(function(service) {
+        $scope.services = service.data;
+        Kong.get('/routes').then(function(route) {
+            $scope.routes = route.data;
         });
     });
 
@@ -20,6 +13,13 @@ angular.module('app').controller("PluginController", ["$scope", "Kong", "$locati
         $scope.title = "Edit Plugin";
         $scope.action = "Save";
         mode = 'edit';
+        if (plugin.route_id) {
+            $scope.route = plugin.route_id;
+        }
+
+        if (plugin.service_id) {
+            $scope.service = plugin.service_id;
+        }
     } else {
         $scope.title = "Add plugin";
         $scope.action = "Add";
@@ -30,11 +30,11 @@ angular.module('app').controller("PluginController", ["$scope", "Kong", "$locati
       plugins.enabled_plugins :
       Object.keys(plugins.enabled_plugins); // Happens with kong 0.9.0. See issue #52
 
-    var apisOptions = {'Choose option': null};
+    var apisOptions = {'All': null};
     apis.data.forEach(function(api) {
         apisOptions[api.name] = api.id
     });
-    var consumerOptions = {'Choose option': null};
+    var consumerOptions = {'All': null};
     consumers.data.forEach(function(consumer) {
         consumerOptions[consumer.username] = consumer.id
     });
@@ -78,30 +78,56 @@ angular.module('app').controller("PluginController", ["$scope", "Kong", "$locati
             Alert.error("You must choose a plugin.");
             return;
         }
-        // $scope.plugin.service_id = $scope.service.id;
-        console.log('routeId', $scope.route);
-        if (!$scope.plugin.api_id) {
-            $scope.plugin.route_id = $scope.route.id;
+
+        var pluginData = false;
+        if (!$scope.service) {
+            $scope.plugin.service_id = $scope.service;
         }
 
-        var endpoint = '/plugins';
-        var data = $scope.plugin;
-        console.log('Plugin', $scope.plugin);
-        Kong.put(endpoint, data).then(function (response) {
-            Alert.success('Plugin saved!');
-            $route.reload();
-        }, function (response) {
-            if (!response) {
-                // unexpected error message already displayed by Kong service.
-                return;
-            }
-            if (response.status == 400 || response.status == 409) {
-                $scope.errors = Kong.unflattenErrorResponse(response.data);
-            } else {
-                Alert.error('Unexpected error from Kong');
-                console.log(response);
-            }
-        });
+        if (!$scope.route) {
+            $scope.plugin.route_id = $scope.route;
+        }
+
+        if ($scope.plugin.api_id) {
+            pluginData = true;
+        }
+
+        if (!$scope.plugin.api_id && !$scope.service) {
+            $scope.plugin.route_id = $scope.route;
+            pluginData = true;
+        }
+
+        if (!$scope.plugin.api_id && !$scope.route) {
+            $scope.plugin.service_id = $scope.service;
+            pluginData = true;
+        }
+
+        if (($scope.plugin.api_id && $scope.route) || ($scope.plugin.api_id && $scope.service) || ($scope.service && $scope.route)) {
+            pluginData = false;
+        }
+
+        if (pluginData) {
+            var endpoint = '/plugins';
+            var data = $scope.plugin;
+            console.log('Plugin', $scope.plugin);
+            Kong.put(endpoint, data).then(function (response) {
+                Alert.success('Plugin saved!');
+                $route.reload();
+            }, function (response) {
+                if (!response) {
+                    // unexpected error message already displayed by Kong service.
+                    return;
+                }
+                if (response.status == 400 || response.status == 409) {
+                    $scope.errors = Kong.unflattenErrorResponse(response.data);
+                } else {
+                    Alert.error('Unexpected error from Kong');
+                    console.log(response);
+                }
+            });
+        } else {
+            Alert.error("Choose API or Service or Route.")
+        }
     };
 
     function loadSchema(pluginName) {
