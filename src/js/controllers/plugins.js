@@ -50,12 +50,9 @@ angular.module('app').controller("PluginsController", ["$scope", "Kong", "$route
             });
 
             Kong.get('/routes?').then(function(routeCollection) {
-                var routeData = routeCollection.data.map(function(routes){
-                    return routes;
-                });
 
                 angular.forEach(collection.data, function(plugin, index){
-                    angular.forEach(routeData, function(route, routeIndex){
+                    angular.forEach(routeCollection.data, function(route, routeIndex){
                         if (plugin.route_id === route.id) {
                             collection.data[index]['route'] = route;
                         }
