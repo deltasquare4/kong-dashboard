@@ -23,23 +23,25 @@
             <div class="row">
                 <div class="input-field col s11">
                     <label class="active">Service</label>
-                    <select materialize-select required id="services"
-                           ng-model="service.id"
+                    <select materialize-select required
+                           ng-if="services"
+                           ng-model="$parent.service"
                            ng-options="service.id as service.name for service in services"
                            >
-                           <option value="" disabled selected>Choose option</option>
+                           <option value="" selected>Choose option</option>
                     </select>
                     <app-field-error error="error.services"></app-field-error>
                 </div>
                 <div class="input-field col s11">
                     <label class="active">Route</label>
                     <select materialize-select required
-                           ng-model="route.id"
-                           ng-options="route.id as route.url for route in routes"
+                           ng-if="routes"
+                           ng-model="$parent.route"
                            >
-                           <option value="" disabled selected>Choose option</option>
+                           <option value="" selected>Choose option</option>
+                           <option ng-repeat="route in routes" value="{{route.id}}">Methods: {{route.methods}}, Protocols: {{route.protocols}}, Hosts: {{route.hosts}}, Paths: {{route.paths}}</option>
                     </select>
-                    <app-field-error error="error.services"></app-field-error>
+                    <app-field-error error="error.routes"></app-field-error>
                 </div>
                 <div class="input-field col s12" ng-show="plugin_schema_loaded">
                     <button type="submit" class="waves-effect waves-light btn right">
