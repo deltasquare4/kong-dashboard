@@ -10,6 +10,13 @@ var Kong = {
   },
 
   /**
+   * Returns a promise that will resolve with all Services being deleted
+   */
+  deleteAllRoutes: function() {
+    return this.deleteAllObjectsOfType('routes');
+  },
+
+  /**
    * Returns a promise that will resolve with all APIs being deleted
    */
   deleteAllAPIs: function() {
@@ -62,6 +69,16 @@ var Kong = {
     return request.get('http://127.0.0.1:8001/services').then((response) => {
       var services = JSON.parse(response.body).data;
       return services.length > 0 ? services[0] : null;
+    });
+  },
+
+  /**
+   * Returns a promise that will resolve with the first Route registered in Kong.
+   */
+  getFirstRoute: () => {
+    return request.get('http://127.0.0.1:8001/routes').then((response) => {
+      var routes = JSON.parse(response.body).data;
+      return routes.length > 0 ? routes[0] : null;
     });
   },
 
