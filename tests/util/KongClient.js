@@ -148,6 +148,24 @@ var Kong = {
   },
 
   /**
+   * Returns a promise that will resolve with the creation of an Service.
+   */
+  createService: (data) => {
+    return request.post('http://127.0.0.1:8001/services', data).then((response) => {
+      return response.body;
+    });
+  },
+
+  /**
+   * Returns a promise that will resolve with the creation of Route.
+   */
+  createRoute: (data) => {
+    return request.post('http://127.0.0.1:8001/routes', data).then((response) => {
+      return response.body;
+    });
+  },
+
+  /**
    * Returns a promise that will resolve with the creation of basic auth credentials for the consumer.
    */
   createBasicAuthCreds: (consumer, username, password) => {
