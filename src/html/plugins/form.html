@@ -24,6 +24,7 @@
                 <div class="input-field col s11">
                     <label class="active">Service</label>
                     <select materialize-select required
+                           id="property-service_id"
                            ng-if="services"
                            ng-model="$parent.service"
                            ng-options="service.id as service.name for service in services"
@@ -35,6 +36,7 @@
                 <div class="input-field col s11">
                     <label class="active">Route</label>
                     <select materialize-select required
+                           id="property-route_id"
                            ng-if="routes"
                            ng-model="$parent.route"
                            >
