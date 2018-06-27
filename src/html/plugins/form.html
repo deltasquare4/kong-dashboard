@@ -36,12 +36,11 @@
                 <div class="input-field col s11">
                     <label class="active">Route</label>
                     <select materialize-select required
-                           id="property-route_id"
                            ng-if="routes"
                            ng-model="$parent.route"
                            >
                            <option value="" selected>Choose option</option>
-                           <option ng-repeat="route in routes" value="{{route.id}}">Methods: {{route.methods}}, Protocols: {{route.protocols}}, Hosts: {{route.hosts}}, Paths: {{route.paths}}</option>
+                           <option id="property-route_id" ng-repeat="route in routes" value="{{route.id}}">Methods: {{route.methods}}, Protocols: {{route.protocols}}, Hosts: {{route.hosts}}, Paths: {{route.paths}}</option>
                     </select>
                     <app-field-error error="error.routes"></app-field-error>
                 </div>
