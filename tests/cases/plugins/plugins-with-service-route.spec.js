@@ -29,6 +29,8 @@ describe('Basic Auth plugin testing:', () => {
         }).then((res) => {
           route = res;
           done();
+        }).catch((error) => {
+          console.log('error', error);
         });
       });
     });
@@ -46,13 +48,13 @@ describe('Basic Auth plugin testing:', () => {
     HomePage.visit();
     Sidebar.clickOn('Plugins');
     ListPluginsPage.clickAddButton();
-    inputs = {
+    var inputs = {
       'name': 'basic-auth',
       'route_id': route.hosts[0],
       'config-hide_credentials': true,
       'config-anonymous': ''
     };
-    expectedPluginParams = {
+    var expectedPluginParams = {
       'route_id': route.id,
       'name': 'basic-auth',
       'config': {'hide_credentials': true, 'anonymous': ''},
@@ -67,6 +69,8 @@ describe('Basic Auth plugin testing:', () => {
       delete createdPlugin['created_at'];
       expect(createdPlugin).toEqual(expectedPluginParams);
       done();
+    }).catch((error) => {
+      console.log('error', error);
     });
   });
 
@@ -75,13 +79,13 @@ describe('Basic Auth plugin testing:', () => {
     Sidebar.clickOn('Plugins');
     ListPluginsPage.clickAddButton();
 
-    inputs = {
+    var inputs = {
       'name': 'basic-auth',
       'service_id': service.name,
       'config-hide_credentials': true,
       'config-anonymous': ''
     };
-    expectedPluginParams = {
+    var expectedPluginParams = {
       'service_id': service.id,
       'name': 'basic-auth',
       'config': {'hide_credentials': true, 'anonymous': ''},
@@ -96,6 +100,8 @@ describe('Basic Auth plugin testing:', () => {
       delete createdPlugin['created_at'];
       expect(createdPlugin).toEqual(expectedPluginParams);
       done();
+    }).catch((error) => {
+      console.log('error', error);
     });
   });
 
@@ -119,6 +125,8 @@ describe('Basic Auth plugin testing:', () => {
         expect(updatedPlugin.config).toEqual({'hide_credentials': true, 'anonymous': ''});
       }
       done();
+    }).catch((error) => {
+      console.log('error', error);
     });
   });
 
@@ -139,6 +147,8 @@ describe('Basic Auth plugin testing:', () => {
       expect(createdPlugin.service_id).toEqual(service.id);
       expect(createdPlugin.config).toEqual({'whitelist': ['foo']});
       done();
+    }).catch((error) => {
+      console.log('error', error);
     });
   });
 
@@ -161,6 +171,8 @@ describe('Basic Auth plugin testing:', () => {
       expect(updatedPlugin.api_id).toBeUndefined();
       expect(updatedPlugin.config).toEqual({'whitelist': ['admin'], 'blacklist': {}});
       done();
+    }).catch((error) => {
+      console.log('error', error);
     });
   });
 
