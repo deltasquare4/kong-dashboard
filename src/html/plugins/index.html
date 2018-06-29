@@ -39,6 +39,8 @@
             <th>Name</th>
             <th>API</th>
             <th>Consumer</th>
+            <th>Service</th>
+            <th>Route</th>
             <th>Status</th>
             <th>Created</th>
             <th></th>
@@ -50,11 +52,54 @@
             <td>{{plugin.name}}</td>
             <td>
                 <a ng-if="plugin.api_id" href="#!/apis/{{plugin.api_id}}">{{plugin.api_name}}</a>
-                <span ng-if="!plugin.api_id">All</span>
+                <span ng-if="plugin.route_id || plugin.service_id"> - </span>
+                <span ng-if="!plugin.api_id && !plugin.route_id && !plugin.service_id"> All </span>
             </td>
             <td>
                 <a ng-if="plugin.consumer_id" href="#!/consumers/{{plugin.consumer_id}}">{{plugin.consumer_username}}</a>
                 <span ng-if="!plugin.consumer_id">All</span>
+            </td>
+            <td>
+                <a ng-if="plugin.service_id" href="#!/services/{{ plugin.service_id }}">{{ plugin.service_name }}</a>
+                <span ng-if="!plugin.service_id"> - </span>
+            </td>
+            <td>
+                <b ng-if="plugin.route_id">Id:</b>
+                <a ng-if="plugin.route_id" href="#!/routes/{{ plugin.route_id }}">{{ plugin.route_id }}</a>
+                <br>
+                <span ng-if="plugin.route.methods.length != 1"
+                    class="browser-default">
+                    <b ng-if="plugin.route_id">Methods:</b>
+                    <span ng-repeat="method in plugin.route.methods">
+                     {{ method }},
+                    </span>
+                </span>
+                <span ng-if="plugin.route.methods.length == 1">
+                   <b>Method:</b> {{ plugin.route.methods[0] }}
+                </span>
+                <span ng-if="!plugin.route_id"> - </span>
+                <br>
+                <span ng-if="plugin.route.protocols.length != 1"
+                    class="browser-default">
+                    <b ng-if="plugin.route_id">Protocols:</b>
+                    <span ng-repeat="method in plugin.route.protocols">
+                     {{ method }},
+                    </span>
+                </span>
+                <span ng-if="plugin.route.protocols.length == 1">
+                   <b>Protocol:</b> {{ plugin.route.protocols[0] }}
+                </span>
+                <br>
+                <span ng-if="plugin.route.hosts.length != 1"
+                    class="browser-default">
+                    <b ng-if="plugin.route_id">Hosts:</b>
+                    <span ng-repeat="host in plugin.route.hosts">
+                         {{ host }},
+                    </span>
+                </span>
+                <span ng-if="plugin.route.hosts.length == 1">
+                    <b>Host:</b> {{ plugin.route.hosts[0] }}
+                </span>
             </td>
             <td>
                 <div class="switch">

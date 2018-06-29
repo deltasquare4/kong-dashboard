@@ -2,15 +2,20 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
 {
     $scope.schema = env.schemas.route;
     $scope.errors = {};
-
+    $scope.services = {};
 
     onInit();
 
     function onInit() {
+        Kong.get('/services').then(function(collection) {
+            $scope.services = collection.data;
+        });
+
         if ($routeParams.id) {
             $scope.route = route;
             $scope.title = "Edit Route";
             $scope.action = "Save";
+            $scope.service = route.service.id;
         } else {
             $scope.route = {};
             $scope.title = "Add an Route";
@@ -24,7 +29,8 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
 
     $scope.save = function () {
         if ( $scope.isEdit() ) {
-            Kong.patch('/services/' + $scope.route.id, $scope.route).then(function () {
+            $scope.route = routeData();
+            Kong.patch('/routes/' + $scope.route.id, $scope.route).then(function () {
                 Alert.success('Route updated');
                 // clearing errors.
                 $scope.errors = {};
@@ -37,7 +43,8 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
                 }
             });
         } else {
-            Kong.post('/services', $scope.route).then(function () {
+            $scope.route = routeData();
+            Kong.post('/routes', $scope.route).then(function () {
                 Alert.success('Route created');
                 // clearing inputs.
                 $scope.route = {};
@@ -51,6 +58,30 @@ angular.module('app').controller("RouteController", ["$scope", "Kong", "$routePa
                     console.log(response);
                 }
             });
+        }
+
+        function routeData() {
+            //convert to array
+            var hosts;
+            var paths;
+
+            if (typeof($scope.route.hosts) === 'string' && typeof($scope.route.paths) === 'string') {
+                hosts = $scope.route.hosts.split(',');
+                paths = $scope.route.paths.split(',');
+            } else if (typeof($scope.route.paths) === 'string') {
+                paths = $scope.route.paths.split(',');
+                hosts = $scope.route.hosts;
+            } else if (typeof($scope.route.hosts) === 'string'){
+                hosts = $scope.route.hosts.split(',');
+                paths = $scope.route.paths;
+            }
+
+            //add to route object
+            $scope.route.hosts = hosts;
+            $scope.route.paths = paths;
+            $scope.route.service = {id: $scope.service};
+
+            return $scope.route;
         }
     };
 }]);

@@ -15,13 +15,36 @@
             </div>
         </div>
         <form name="addPlugin" class="col s7" novalidate ng-submit="save()">
+            <object-properties
+                schema="schema"
+                object="plugin"
+                errors="errors"
+                ></object-properties>
             <div class="row">
-                <object-properties
-                  schema="schema"
-                  object="plugin"
-                  errors="errors"
-                  ></object-properties>
-
+                <div class="input-field col s11">
+                    <label class="active">Service</label>
+                    <select materialize-select required
+                           id="property-service_id"
+                           ng-if="services"
+                           ng-model="$parent.service"
+                           ng-options="service.id as service.name for service in services"
+                           >
+                           <option value="" selected>Choose option</option>
+                    </select>
+                    <app-field-error error="error.services"></app-field-error>
+                </div>
+                <div class="input-field col s11">
+                    <label class="active">Route</label>
+                    <select materialize-select required
+                           id="property-route_id"
+                           ng-if="routes"
+                           ng-model="$parent.route"
+                           >
+                           <option value="" selected>Choose option</option>
+                           <option ng-repeat="route in routes" value="{{route.id}}">Methods: {{route.methods}}, Protocols: {{route.protocols}}, Hosts: {{route.hosts}}, Paths: {{route.paths}}</option>
+                    </select>
+                    <app-field-error error="error.routes"></app-field-error>
+                </div>
                 <div class="input-field col s12" ng-show="plugin_schema_loaded">
                     <button type="submit" class="waves-effect waves-light btn right">
                         {{mode === 'create' ? "Create" : "Edit"}}

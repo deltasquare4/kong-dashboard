@@ -23,6 +23,21 @@
               errors="errors"
               ></object-properties>
             <div class="row">
+                <div class="col s11">
+                    <label class="active">service</label>
+                    <select materialize-select required id="services"
+                           ng-model="service"
+                           ng-options="service.id as service.name for service in services"
+                           >
+                           <option value="" disabled selected>Choose option</option>
+                    </select>
+                    <i>
+                      <label class="active" style="margin-bottom:15px;font-size:13px">
+                        The Service this Route is associated to. This is where the Route proxies traffic to.
+                      </label>
+                    </i>
+                    <app-field-error error="error.services"></app-field-error>
+                </div>
                 <div class="input-field col s12">
                     <button type="submit" class="waves-effect waves-light btn right">
                         {{action}}

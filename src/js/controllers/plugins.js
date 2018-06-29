@@ -14,6 +14,12 @@ angular.module('app').controller("PluginsController", ["$scope", "Kong", "$route
 
     var loaded_pages = [];
     $scope.loadMore = function() {
+        var serviceData;
+        Kong.get('/services?').then(function(serviceCollection) {
+            serviceData = serviceCollection.data.map(function(services){
+                return {serviceId: services.id, serviceName: services.name};
+            });
+        });
         var page;
         if ($scope.owner_type == 'Consumer') {
             page = '/plugins?consumer_id=' + $scope.owner.id + '&';
@@ -34,6 +40,27 @@ angular.module('app').controller("PluginsController", ["$scope", "Kong", "$route
             if ($scope.total === null) {
                 $scope.total = 0;
             }
+
+            angular.forEach(collection.data, function(plugin, index){
+                angular.forEach(serviceData, function(service){
+                    if (plugin.service_id === service.serviceId) {
+                        collection.data[index]['service_name'] = service.serviceName;
+                    }
+                })
+            });
+
+            Kong.get('/routes?').then(function(routeCollection) {
+
+                angular.forEach(collection.data, function(plugin, index){
+                    angular.forEach(routeCollection.data, function(route, routeIndex){
+                        if (plugin.route_id === route.id) {
+                            collection.data[index]['route'] = route;
+                        }
+                    })
+                });
+            });
+
+            console.log('plugins', collection.data);
             $scope.plugins.push.apply($scope.plugins, collection.data);
             $scope.total += collection.total;
             $scope.offset = collection.offset ? collection.offset : null;
